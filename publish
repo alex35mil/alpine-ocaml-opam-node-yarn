@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+CACHE_KEY="$(openssl rand -base64 6 | tr -dc 'a-zA-Z0-9' | cut -c -4)"
+
+IMAGE="alex35mil/alpine-ocaml-opam-node-yarn"
+VERSION="alpine-3.19-ocaml-4.14-node-16.20-yarn-1.22-$CACHE_KEY"
+
+echo "=== Building $IMAGE:$VERSION image..."
+docker build --platform linux/amd64 -t $IMAGE:$VERSION .
+echo ""
+
+echo "=== Publishing $IMAGE:$VERSION image..."
+docker push $IMAGE:$VERSION
+echo ""
+
+echo "Done."
