@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-CACHE_KEY="$(openssl rand -base64 6 | tr -dc 'a-zA-Z0-9' | cut -c -4)"
+CACHE_KEY="$(openssl rand -base64 6 | tr -dc 'a-z0-9' | cut -c -4)"
 
 IMAGE="alex35mil/alpine-ocaml-opam-node-yarn"
 VERSION="alpine-3.19-ocaml-4.14-node-16.20-yarn-1.22-$CACHE_KEY"
@@ -14,6 +14,17 @@ echo ""
 
 echo "=== Publishing $IMAGE:$VERSION image..."
 docker push $IMAGE:$VERSION
+echo ""
+
+echo "=== Creating commit and tagging..."
+git add .
+git commit -m "$VERSION"
+git tag -a "$VERSION" -m "$VERSION"
+echo ""
+
+echo "=== Pushing to remote..."
+git push
+git push --tags
 echo ""
 
 echo "Done."
